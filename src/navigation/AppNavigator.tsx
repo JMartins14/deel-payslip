@@ -14,12 +14,33 @@ const Stack = createStackNavigator<RootStackParamList>();
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Payslips" component={PayslipListScreen} />
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#1976d2',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerBackAccessibilityLabel: 'Go back',
+          gestureEnabled: true,
+        }}
+      >
+        <Stack.Screen
+          name="Payslips"
+          component={PayslipListScreen}
+          options={{
+            title: 'My Payslips',
+          }}
+        />
         <Stack.Screen
           name="PayslipDetails"
           component={PayslipDetailsScreen}
-          options={{ title: 'Payslip Details' }}
+          options={{
+            title: 'Payslip Details',
+            headerBackAccessibilityLabel: 'Back to payslips list',
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
