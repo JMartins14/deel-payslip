@@ -52,10 +52,12 @@ export async function copyAssetToDownloads(fileName: string) {
       return;
     }
 
-    const downloadDest =
+    const path =
       Platform.OS === 'android'
         ? RNBlobUtil.fs.dirs.DownloadDir + '/' + fileName
         : RNBlobUtil.fs.dirs.DocumentDir + '/' + fileName;
+
+    const downloadDest = await getUniqueFilePath(path);
 
     const assetPath = RNBlobUtil.fs.asset(fileName);
 
@@ -127,4 +129,20 @@ export function getMimeType(fileName: string) {
       mimeType = 'application/octet-stream';
   }
   return mimeType;
+}
+
+export async function getUniqueFilePath(path: string): Promise<string> {
+  let counter = 1;
+
+  const dotIndex = path.lastIndexOf('.');
+  const hasExt = dotIndex !== -1;
+  const name = hasExt ? path.substring(0, dotIndex) : path;
+  const ext = hasExt ? path.substring(dotIndex) : '';
+
+  while (await RNBlobUtil.fs.exists(path)) {
+    path = `${name}(${counter})${ext}`;
+    counter++;
+  }
+
+  return path;
 }
