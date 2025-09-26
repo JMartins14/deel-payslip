@@ -3,16 +3,15 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  Alert,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { usePayslips } from '../context/PayslipContext';
-import RNFS from 'react-native-fs';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { colors, spacing, typography } from '../utils/theme';
 import { formatDate } from '../utils/date';
+import { copyAssetToDownloads } from '../utils/file';
 
 type Props = {
   route: RouteProp<RootStackParamList, 'PayslipDetails'>;
@@ -37,20 +36,6 @@ export default function PayslipDetailsScreen({ route }: Props) {
   }
 
   const isPDF = payslip.file.endsWith('.pdf');
-
-  const handleDownload = async () => {
-    try {
-      const destPath = `${RNFS.DownloadDirectoryPath}/payslip_${payslip.id}.pdf`;
-      await RNFS.copyFileAssets(payslip.file, destPath);
-      Alert.alert('Success', 'Payslip saved to Downloads.', [{ text: 'OK' }]);
-    } catch (e) {
-      console.error(e);
-      Alert.alert('Error', 'Failed to save payslip. Please try again.', [
-        { text: 'OK' },
-      ]);
-    }
-  };
-
   return (
     <ScrollView
       style={styles.container}
@@ -111,7 +96,7 @@ export default function PayslipDetailsScreen({ route }: Props) {
 
         <TouchableOpacity
           style={styles.downloadButton}
-          onPress={handleDownload}
+          onPress={() => copyAssetToDownloads(payslip.file)}
           accessibilityRole="button"
           accessibilityLabel={`Download payslip ${payslip.id} as ${
             isPDF ? 'PDF' : 'image'
