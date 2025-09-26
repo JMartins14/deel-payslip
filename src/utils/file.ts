@@ -96,7 +96,9 @@ export async function openFile(filePath: string, mimeType: string) {
     }
 
     if (Platform.OS === 'ios') {
-      RNBlobUtil.ios.openDocument(filePath);
+      setTimeout(() => {
+        RNBlobUtil.ios.openDocument(filePath);
+      }, 300);
     } else if (Platform.OS === 'android') {
       await RNBlobUtil.android.actionViewIntent(filePath, mimeType);
     }
